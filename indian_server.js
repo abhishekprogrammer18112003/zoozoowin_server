@@ -8,39 +8,37 @@ const PORT = process.env.PORT || 3000;
 
 // Function to fetch and process data
 async function fetchAndProcessData() {
-  // Fetch the current GMT time
   const now = new Date();
-  
-  // Convert GMT time to IST (GMT + 5:30)
-  const istOffset = 5.5 * 60 * 60 * 1000;
-  const istTime = new Date(now.getTime() + istOffset);
+const formattedDate = `${now.getDate().toString().padStart(2, "0")}-${(
+  now.getMonth() + 1
+).toString().padStart(2, "0")}-${now.getFullYear()}`;
+let hour = now.getHours();
 
-  const formattedDate = `${istTime.getDate().toString().padStart(2, "0")}-${(
-    istTime.getMonth() + 1
-  ).toString().padStart(2, "0")}-${istTime.getFullYear()}`;
-  let hour = istTime.getHours()-1;
+// Adjust the hour if necessary to handle cases around midnight
+if (hour < 0) {
+  hour = 23;
+}
 
-  const period = hour >= 12 ? "PM" : "AM";
-  let displayHour = hour % 12 || 12; // Converts 0 to 12 for 12-hour format
-  const formattedDisplayHour = displayHour.toString().padStart(2, "0"); // Ensures two-digit hour
+const period = hour >= 12 ? "PM" : "AM";
+let displayHour = hour % 12 || 12; // Converts 0 to 12 for 12-hour format
+const formattedDisplayHour = displayHour.toString().padStart(2, "0"); // Ensures two-digit hour
 
-  const formattedHour = `${formattedDisplayHour}:00 ${period}`;
+const formattedHour = `${formattedDisplayHour}:00 ${period}`;
 
-  const refPath = `Game1/${formattedDate}_${formattedHour}`;
-  console.log(refPath);
-  const dataRef = ref(database, refPath);
+const refPath = `Game1/${formattedDate}_${formattedHour}`;
+console.log(refPath);
+const dataRef = ref(database, refPath);
 
-  try {
-    const snapshot = await get(dataRef);
-    const gameData = snapshot.val();
-    console.log("===============GAME DATA=================");
-    console.log(gameData);
+try {
+  const snapshot = await get(dataRef);
+  const gameData = snapshot.val();
+  console.log("===============GAME DATA=================");
+  console.log(gameData);
 
-    if (!gameData) {
-      console.log("No game data found.");
-      return null;
-    }
-
+  if (!gameData) {
+    console.log("No game data found.");
+    return null;
+  }
     // Create an empty Map to store card ID and total amount pairs
     const cardTotalAmountMap = new Map();
 
@@ -84,7 +82,10 @@ async function fetchAndProcessData() {
     console.log("=================leastselected card ==================");
     console.log(leastSelectedCard);
 
+    
+
     // Check if the least selected card is present for any player
+
     Object.values(gameData).forEach(async (player) => {
       const mobile = player.mobile;
       console.log(mobile);
@@ -135,6 +136,7 @@ async function fetchAndProcessData() {
       amountToSpent: amountSpent,
       amountLeft: leftAmount,
     };
+    // return leastSelectedCard;
   } catch (error) {
     console.error("Error fetching game data:", error);
     return null;
