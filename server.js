@@ -142,7 +142,7 @@ async function fetchAndProcessData() {
 }
 
 // Schedule the function to run every hour at the 3rd minute
-schedule.scheduleJob('32 * * * *', fetchAndProcessData);
+// schedule.scheduleJob('32 * * * *', fetchAndProcessData);
 
 // Manual trigger endpoint
 app.get("/trigger", async (req, res) => {
