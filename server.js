@@ -18,7 +18,7 @@ async function fetchAndProcessData() {
   const formattedDate = `${istTime.getDate().toString().padStart(2, "0")}-${(
     istTime.getMonth() + 1
   ).toString().padStart(2, "0")}-${istTime.getFullYear()}`;
-  let hour = istTime.getHours()-1;
+  let hour = istTime.getHours();
 
   const period = hour >= 12 ? "PM" : "AM";
   let displayHour = hour % 12 || 12; // Converts 0 to 12 for 12-hour format
