@@ -74,11 +74,21 @@ async function fetchAndProcessData() {
 
     // Iterate over the entries of the map to find the least selected card
     for (const [cardId, Amount] of cardTotalAmountMap) {
-      if (Amount < minAmount) {
+      totalAmount += Amount;
+    }
+
+    // Calculate the threshold (25% of the total amount)
+    const threshold = totalAmount * 0.25;
+
+    // Find the card that leaves the amount left less than or equal to the threshold
+    for (const [cardId, Amount] of cardTotalAmountMap) {
+      const potentialSpent = Amount * 2;
+      const potentialLeft = totalAmount - potentialSpent;
+      if (potentialLeft <= threshold && Amount < minAmount) {
         minAmount = Amount;
         leastSelectedCard = cardId;
+        amountSpent = potentialSpent;
       }
-      totalAmount += Amount;
     }
 
     console.log("=================leastselected card ==================");
@@ -94,7 +104,6 @@ async function fetchAndProcessData() {
           console.log(cardData.amount);
           if (cardData.cardId == leastSelectedCard) {
             let winamount = cardData.amount * 2;
-            amountSpent += winamount;
             console.log("================win amount ===============");
             console.log(winamount);
             const userRef = ref(database, `username/${mobile}`);
